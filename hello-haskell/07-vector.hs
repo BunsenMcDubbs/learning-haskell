@@ -2,7 +2,9 @@
 -- in declarations... put them into function type declarations" (121)
 -- Here, `Vector` has a parameterized type `a`
 -- The type of `Vector` is `Vector a` not `Vector a a a`
-data Vector a = Vector a a a deriving (Show)
+data Vector a = Vector a a a deriving (Show, Eq)
+-- deriving Show allows the type to be "toString'd"
+-- deriving Eq allows `==` and `/=` - all values must also derive Eq
 
 -- In the function declaration, we add a type constraint on `a` to be of
 -- type class `Num`, now the `Vector` type is filled with `Num`'s

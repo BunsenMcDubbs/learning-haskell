@@ -1,14 +1,19 @@
-{-
 import Control.Monad
 
 main = iRPN EmptyRPN
 
 iRPN :: RPN -> IO ()
-iRPN RPN = do
+iRPN rpn = do
+    print rpn
     line <- getLine
     when (not $ null line) $ do
-    
--}      
+        iRPN $ case line of
+            "+" -> pushOp Add rpn
+            "-" -> pushOp Subtract rpn
+            "*" -> pushOp Multiply rpn
+            "/" -> pushOp Divide rpn
+            "**" -> pushOp Raise rpn
+            v -> pushVal (read v :: Value) rpn
 
 type Value = Double
 data Operator = Add | Subtract | Multiply | Divide | Raise deriving (Show, Read)
@@ -34,3 +39,7 @@ applyOp Raise a b = a ** b :: Value
 getAns :: RPN -> Maybe Value
 getAns EmptyRPN = Nothing
 getAns (Stack x _) = x
+
+getStack :: RPN -> [Value]
+getStack EmptyRPN = []
+getStack (Stack _ vs) = vs

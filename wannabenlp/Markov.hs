@@ -7,9 +7,10 @@ module Markov
 , fromState
 , toTransition
 , fromTransition
-, terminateChain
 , empty
 , observe
+, initialize
+, terminate
 , transitionFreqs
 , transitionCounts
 , transition
@@ -50,9 +51,6 @@ toTransition t = Transition t
 fromTransition :: Transition t -> t
 fromTransition (Transition t) = t
 
-terminateChain :: Transition t
-terminateChain = Terminate
-
 {-|
  - Constructs an empty MarkovChain
  -}
@@ -78,6 +76,18 @@ observe state@(State _) tr (MarkovChain chain initialStates) =
     where
         s_obs = Map.findWithDefault (Map.singleton tr 0) state chain 
         s_t_obs = Map.findWithDefault 0 tr s_obs
+
+{-|
+ - Add an initial state. Equivalent to `observe state Initialize mc`
+ -}
+initialize :: (Ord s, Ord t) => State s -> MarkovChain s t -> MarkovChain s t
+initialize state@(State _) mc = observe state Initialize mc
+
+{-|
+ - Add a terminating transition. Equivalent to `observe state Terminate mc`
+ -}
+terminate :: (Ord s, Ord t) => State s -> MarkovChain s t -> MarkovChain s t
+terminate state@(State _) mc = observe state Terminate mc
 
 {-|
  - Get a list of transactions and their frequencies for a given state

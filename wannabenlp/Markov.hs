@@ -1,6 +1,14 @@
 {-# LANGUAGE StandaloneDeriving #-}
 module Markov
-( empty
+( MarkovChain
+, State
+, Transition
+, toState
+, fromState
+, toTransition
+, fromTransition
+, terminateChain
+, empty
 , observe
 , transitionFreqs
 , transitionCounts
@@ -30,6 +38,21 @@ deriving instance Eq t => Eq (Transition t)
 deriving instance Ord t => Ord (Transition t)
 deriving instance Show t => Show (Transition t)
 
+toState :: (Ord s) => s -> State s
+toState s = State s
+
+fromState :: State s -> s
+fromState (State s) = s
+
+toTransition :: (Ord t) => t -> Transition t
+toTransition t = Transition t
+
+fromTransition :: Transition t -> t
+fromTransition (Transition t) = t
+
+terminateChain :: Transition t
+terminateChain = Terminate
+
 {-|
  - Constructs an empty MarkovChain
  -}
@@ -48,13 +71,13 @@ observe state@(State _) Initialize (MarkovChain chain initialStates) =
         (Map.insert state (obs + 1) initialStates)
     where
         obs = Map.findWithDefault 0 state initialStates
-observe state@(State _) trans@(Transition _) (MarkovChain chain initialStates) =
+observe state@(State _) tr (MarkovChain chain initialStates) =
     MarkovChain
-        (Map.insert state (Map.insert trans (s_t_obs + 1) s_obs) chain)
+        (Map.insert state (Map.insert tr (s_t_obs + 1) s_obs) chain)
         (initialStates)
     where
-        s_obs = Map.findWithDefault (Map.singleton trans 0) state chain 
-        s_t_obs = Map.findWithDefault 0 trans s_obs
+        s_obs = Map.findWithDefault (Map.singleton tr 0) state chain 
+        s_t_obs = Map.findWithDefault 0 tr s_obs
 
 {-|
  - Get a list of transactions and their frequencies for a given state

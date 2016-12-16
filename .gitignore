@@ -1,5 +1,8 @@
 project-euler
 
+# ignore test/output txt files
+*.txt
+
 # ignore compile/build files
 *.o
 *.hi

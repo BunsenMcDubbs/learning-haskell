@@ -3,3 +3,6 @@ project-euler
 # ignore compile/build files
 *.o
 *.hi
+
+# ignore vim swap files
+*.swp

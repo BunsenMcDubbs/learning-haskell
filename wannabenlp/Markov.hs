@@ -1,12 +1,26 @@
 {-# LANGUAGE StandaloneDeriving #-}
+module Markov
+( empty
+, observe
+, transitionFreqs
+, transitionCounts
+, transition
+) where
+
 import qualified Data.Map.Strict as Map
 
-{-
+{-|
  - Markov Chain represented by a map of maps relating states to observed
  - transitions and the number of observations for each occurance.
  -}
+data MarkovChain s t =
+    MarkovChain
+        (Map.Map (State s) (Map.Map (Transition t) Integer))
+        (Map.Map (State s) Integer)
+    deriving (Show)
 
 data State s = InitialState | TerminalState | State s
+-- This uses GADT... spooky? yes.
 deriving instance Eq s => Eq (State s)
 deriving instance Ord s => Ord (State s)
 deriving instance Show s => Show (State s)
@@ -16,15 +30,16 @@ deriving instance Eq t => Eq (Transition t)
 deriving instance Ord t => Ord (Transition t)
 deriving instance Show t => Show (Transition t)
 
-data MarkovChain s t =
-    MarkovChain
-        (Map.Map (State s) (Map.Map (Transition t) Integer))
-        (Map.Map (State s) Integer)
-    deriving (Show)
-
+{-|
+ - Constructs an empty MarkovChain
+ -}
 empty :: MarkovChain s t
 empty = MarkovChain (Map.empty) (Map.empty)
 
+{-|
+ - Add an observation to a MarkovChain consisting of an old state and a
+ - transition
+ -}
 observe :: (Ord s, Ord t) =>
     State s -> Transition t -> MarkovChain s t -> MarkovChain s t
 observe state@(State _) Initialize (MarkovChain chain initialStates) =
@@ -40,3 +55,33 @@ observe state@(State _) trans@(Transition _) (MarkovChain chain initialStates) =
     where
         s_obs = Map.findWithDefault (Map.singleton trans 0) state chain 
         s_t_obs = Map.findWithDefault 0 trans s_obs
+
+{-|
+ - Get a list of transactions and their frequencies for a given state
+ -}
+transitionFreqs ::
+    (Ord s) => State s -> MarkovChain s t -> [(Transition t, Double)]
+transitionFreqs TerminalState _ = []
+transitionFreqs state mc@(MarkovChain chain _) = 
+    map
+        (\(t, i) -> (t, (fromIntegral i) / total))
+        counts
+    where
+        counts = transitionCounts state mc
+        total = fromIntegral . sum . map (\(t, c) -> c) $ counts
+
+{-|
+ - Get a list of transactions and their observation counts for a given state
+ -}
+transitionCounts ::
+    (Ord s) => State s -> MarkovChain s t -> [(Transition t, Integer)]
+transitionCounts TerminalState _ = []
+transitionCounts state (MarkovChain chain _) =
+    Map.toList $ Map.findWithDefault Map.empty state chain
+
+{-|
+ - Randomly select a transition for a given state using observed frequencies
+ -}
+transition ::
+    (Ord s) => State s -> MarkovChain s t -> Transition t
+transition state mc = undefined

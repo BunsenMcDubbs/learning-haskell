@@ -1,6 +1,10 @@
 # Welcome to `wannabenlp`
 
-1-gram Markov chain has been implemented!
+**1-gram Markov chain has been implemented!**
+
+Note that the Markov chain implementation in `Markov/MarkovChain.hs` is
+actually generic and only requires states and transitions are instances
+of `Ord` and `Show` (maybe and probably `Read` in the future).
 
 Sample output (see the magic!):
 ```

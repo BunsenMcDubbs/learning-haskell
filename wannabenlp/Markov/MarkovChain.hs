@@ -1,16 +1,5 @@
-{-# LANGUAGE StandaloneDeriving #-}
-module Markov
-( MarkovChain
-, State
-, Transition
-, initialState
-, terminalState
-, toState
-, fromState
-, initialization
-, termination
-, toTransition
-, fromTransition
+module Markov.MarkovChain
+( MarkovChain (..)
 , empty
 , observe
 , initialize
@@ -23,11 +12,13 @@ module Markov
 , transitionCounts
 , getTransition
 , walk
-, showStringState
 ) where
 
 import System.Random
 import qualified Data.Map.Strict as Map
+
+import Markov.State
+import Markov.Transition
 
 {-|
  - Markov Chain represented by a map of maps relating states to observed
@@ -38,39 +29,6 @@ data MarkovChain s t =
         (Map.Map (State s) (Map.Map (Transition t) Int))
         (Map.Map (State s) Int)
     deriving (Show)
-
-data State s = InitialState | TerminalState | State s
--- This uses GADT... spooky? yes.
-deriving instance Eq s => Eq (State s)
-deriving instance Ord s => Ord (State s)
-deriving instance Show s => Show (State s)
-
-data Transition t = Initialize | Terminate | Transition t
-deriving instance Eq t => Eq (Transition t)
-deriving instance Ord t => Ord (Transition t)
-deriving instance Show t => Show (Transition t)
-
-initialState :: (Ord s) => State s
-initialState = InitialState
-terminalState :: (Ord s) => State s
-terminalState = TerminalState
-
-toState :: (Ord s) => s -> State s
-toState s = State s
-
-fromState :: State s -> s
-fromState (State s) = s
-
-initialization :: (Ord t) => Transition t
-initialization = Initialize
-termination :: (Ord t) => Transition t
-termination = Terminate
-
-toTransition :: (Ord t) => t -> Transition t
-toTransition t = Transition t
-
-fromTransition :: Transition t -> t
-fromTransition (Transition t) = t
 
 {-|
  - Constructs an empty MarkovChain
@@ -217,7 +175,3 @@ walkActWrapper ::
 walkActWrapper _ _ Terminate = TerminalState
 walkActWrapper act s t = act s t
 
--- TODO move out of this file
-showStringState :: State String -> String
-showStringState (State s) = s
-showStringState _ = ""

@@ -3,8 +3,12 @@ module Markov
 ( MarkovChain
 , State
 , Transition
+, initialState
+, terminalState
 , toState
 , fromState
+, initialization
+, termination
 , toTransition
 , fromTransition
 , empty
@@ -24,8 +28,8 @@ import qualified Data.Map.Strict as Map
  -}
 data MarkovChain s t =
     MarkovChain
-        (Map.Map (State s) (Map.Map (Transition t) Integer))
-        (Map.Map (State s) Integer)
+        (Map.Map (State s) (Map.Map (Transition t) Int))
+        (Map.Map (State s) Int)
     deriving (Show)
 
 data State s = InitialState | TerminalState | State s
@@ -39,11 +43,21 @@ deriving instance Eq t => Eq (Transition t)
 deriving instance Ord t => Ord (Transition t)
 deriving instance Show t => Show (Transition t)
 
+initialState :: (Ord s) => State s
+initialState = InitialState
+terminalState :: (Ord s) => State s
+terminalState = TerminalState
+
 toState :: (Ord s) => s -> State s
 toState s = State s
 
 fromState :: State s -> s
 fromState (State s) = s
+
+initialization :: (Ord t) => Transition t
+initialization = Initialize
+termination :: (Ord t) => Transition t
+termination = Terminate
 
 toTransition :: (Ord t) => t -> Transition t
 toTransition t = Transition t
@@ -94,7 +108,6 @@ terminate state@(State _) mc = observe state Terminate mc
  -}
 transitionFreqs ::
     (Ord s) => State s -> MarkovChain s t -> [(Transition t, Double)]
-transitionFreqs TerminalState _ = []
 transitionFreqs state mc@(MarkovChain chain _) = 
     map
         (\(t, i) -> (t, (fromIntegral i) / total))
@@ -107,7 +120,7 @@ transitionFreqs state mc@(MarkovChain chain _) =
  - Get a list of transactions and their observation counts for a given state
  -}
 transitionCounts ::
-    (Ord s) => State s -> MarkovChain s t -> [(Transition t, Integer)]
+    (Ord s) => State s -> MarkovChain s t -> [(Transition t, Int)]
 transitionCounts TerminalState _ = []
 transitionCounts state (MarkovChain chain _) =
     Map.toList $ Map.findWithDefault Map.empty state chain
@@ -117,4 +130,7 @@ transitionCounts state (MarkovChain chain _) =
  -}
 transition ::
     (Ord s) => State s -> MarkovChain s t -> Transition t
+transition InitialState _ = Initialize
+transition TerminalState _ = Terminate
 transition state mc = undefined
+

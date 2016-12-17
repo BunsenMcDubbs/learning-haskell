@@ -16,18 +16,14 @@ import Markov
 fromSentence ::
     [String] -> MarkovChain String String -> MarkovChain String String
 fromSentence [] mc = mc
-fromSentence (w1:[]) mc = terminate (toState w1) mc
+fromSentence (w1:[]) mc = terminate w1 mc
 fromSentence (w1:w2:ws) mc =
-    observe (toState w1) (toTransition w2) $ fromSentence (w2:ws) mc
+    transition w1 w2 $ fromSentence (w2:ws) mc
 
 fromSentences :: [[String]] -> MarkovChain String String
 fromSentences sentences =
     foldr (fromSentence) initialChain sentences
-    where
-        initialChain = foldr
-            (\s mc -> initialize (toState s) mc)
-            empty $
-            map head sentences
+    where initialChain = foldr initialize empty $ map head sentences
 
 fromFile :: String -> IO (MarkovChain String String)
 fromFile fileName = do
@@ -45,21 +41,17 @@ fromFile fileName = do
         markovChain = fromSentences sentences
     return markovChain
 
-generateSentence :: StdGen -> MarkovChain String String -> [String]
-generateSentence randGen mc = generateSentenceHelper randGen [] mc
+act :: State String -> Transition String -> State String
+act _ = toState . fromTransition
 
-generateSentenceHelper ::
-    StdGen -> [String] -> MarkovChain String String -> [String]
-generateSentenceHelper randGen [] mc =
-    [fromState $ nextState initialState $ transition initialState mc]
-generateSentenceHelper randGen (w1:ws) mc =
-    undefined
+getRandomSentence :: StdGen -> MarkovChain String String -> String
+getRandomSentence randGen mc = unwords $ map showStringState states
+    where states = walk randGen act mc
 
-nextState :: State s -> Transition t -> State s
-nextState oldState transition = undefined
 
 main = do
     (fileName:[]) <- getArgs
     markovChain <- fromFile fileName
     randGen <- getStdGen
-    print $ unwords . reverse $ generateSentence randGen markovChain
+    let sentence = walk randGen act markovChain
+    print markovChain

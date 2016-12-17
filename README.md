@@ -3,8 +3,9 @@
 Repository for stuff I'm learning over winter break (December 2016-January
 2017).
 
-So far (12/11) the to-do list is:
+So far ~~(12/11)~~ (12/17) the to-do list is:
  - [ ] Haskell (small code exercises in `hello-haskell` directory)
+ - [ ] Super simple "NLP" implementations (see `wannabenlp` directory)
  - [ ] Some basic ML/CV stuff (preferably with Haskell)
  - [ ] Small web-app (using a Haskell web framework)
 

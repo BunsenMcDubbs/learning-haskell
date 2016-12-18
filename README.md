@@ -6,8 +6,10 @@ Repository for stuff I'm learning over winter break (December 2016-January
 (actively updated) todo list is:
  - [x] Haskell (small code exercises in `hello-haskell` directory)
  - [x] Super simple "NLP" implementations (see `wannabenlp` directory)
- - [ ] Implementation of functional code in not-Haskell (Javascript/Node.js)
-       (see `fakehaskell`)
+ - [ ] Implementation of [Norvig's spell checker](http://norvig.com/spell-correct.html)
+       (see `norvigspell` directory)
+ - [x] Implementation of functional code in not-Haskell (Javascript/Node.js)
+       (see `fakehaskell` directory)
  - [ ] Some basic ML/CV stuff (preferably with Haskell)
  - [ ] Small web-app (using a Haskell web framework)
 

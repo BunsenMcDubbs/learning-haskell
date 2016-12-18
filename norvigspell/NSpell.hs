@@ -1,5 +1,9 @@
-import System.IO
-import Control.Monad
+module NSpell
+( empty
+, observe
+, correction
+) where
+
 import Data.List
 import Data.Ord
 import qualified Data.Map.Lazy as Map
@@ -8,6 +12,9 @@ import qualified Data.Text as T
 
 type WordCount = Map.Map String Int
 type StringSet = Set.Set String
+
+empty :: WordCount
+empty = Map.empty
 
 observe :: WordCount -> String -> WordCount
 observe wc w = Map.insert w ((Map.findWithDefault 0 w wc) + 1) wc
@@ -35,11 +42,3 @@ edit w =
           transposes = [l ++ (r2:r1:rs) | (l,(r1:r2:rs)) <- splits]
           replaces = [l ++ c : rs | (l,(r1:rs)) <- splits, c <- ['a'..'z']]
           inserts = [l ++ c : r | (l,r) <- splits, c <- ['a'..'z']]
-
-main = do
-    contents <- readFile "big.txt"
-    let ws = (map T.unpack) . T.words . T.toLower . T.pack $ contents
-        wc = foldl (observe) (Map.empty)  ws
-    forever $ do
-        w <- getLine
-        putStrLn $ w ++ " -> " ++ correction wc w

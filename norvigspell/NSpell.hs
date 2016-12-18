@@ -8,7 +8,6 @@ import Data.List
 import Data.Ord
 import qualified Data.Map.Lazy as Map
 import qualified Data.Set as Set
-import qualified Data.Text as T
 
 type WordCount = Map.Map String Int
 type StringSet = Set.Set String

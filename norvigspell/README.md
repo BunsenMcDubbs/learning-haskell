@@ -7,6 +7,9 @@ website, accompanied by an excellent step-by-step
 ## Running the code
  1. Install Haskell tools (I used the Haskell Platform)
  2. Download text and test files from Norvig's page
+  - [`big.txt`](http://norvig.com/big.txt)
+  - [`spell-testset1.txt`](http://norvig.com/spell-testset1.txt)
+  - [`spell-testset2.txt`](http://norvig.com/spell-testset2.txt)
  3. Compile the code `ghc Main.hs`
  4. Run! `Main.hs`
 

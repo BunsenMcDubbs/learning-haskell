@@ -1,11 +1,14 @@
 project-euler
 
-# ignore test/output txt files
+# test/output txt files
 *.txt
 
-# ignore compile/build files
+# compile/build files
 *.o
 *.hi
 
-# ignore vim swap files
+# vim swap files
 *.swp
+
+# mac .ds_store
+.DS_Store

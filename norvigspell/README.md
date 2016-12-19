@@ -11,5 +11,7 @@ website, accompanied by an excellent step-by-step
   - [`spell-testset1.txt`](http://norvig.com/spell-testset1.txt)
   - [`spell-testset2.txt`](http://norvig.com/spell-testset2.txt)
  3. Compile the code `ghc Main.hs`
- 4. Run! `Main.hs`
+ 4. Run!
+  - `./Main interactive big.txt` for interactive mode
+  - `./Main test big.txt spell-testset1.txt` run testset1
 

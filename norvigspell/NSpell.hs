@@ -1,12 +1,13 @@
 module NSpell
-( empty
+( WordCount
+, empty
 , observe
 , correction
 ) where
 
 import Data.List
 import Data.Ord
-import qualified Data.Map.Lazy as Map
+import qualified Data.Map.Strict as Map
 import qualified Data.Set as Set
 
 type WordCount = Map.Map String Int
